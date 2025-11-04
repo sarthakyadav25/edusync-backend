@@ -1,5 +1,7 @@
 package com.project.edusync.uis.model.entity.details;
 
+import com.project.edusync.adm.model.entity.AcademicConstraint;
+import com.project.edusync.adm.model.entity.Schedule;
 import com.project.edusync.uis.model.entity.Staff;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,6 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "teacher_details")
@@ -60,4 +65,16 @@ public class TeacherDetails {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "classes_to_teach", columnDefinition = "jsonb")
     private String classesToTeach; // e.g., "[\"Class 9A\", \"Class 10B\"]"
+
+    /**
+     * All schedule entries assigned to this teacher.
+     */
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<Schedule> schedules = new HashSet<>();
+
+    /**
+     * All constraints that apply to this teacher.
+     */
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<AcademicConstraint> academicConstraints = new HashSet<>();
 }
